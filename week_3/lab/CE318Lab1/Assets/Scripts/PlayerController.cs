@@ -8,30 +8,13 @@ public class PlayerController : MonoBehaviour
 {
     public float speed;
     public Rigidbody rb;
-    private int count;
-    private int numberOfPickups = 8;
-    // public TextMeshProUGUI scoreText;
-    // public TextMeshProUGUI winText;
-    public Text scoreText;
-    public Text winText;
-    public Text playerPosition;
-    public Text playerVelocity;
-    public Vector3 previousPosition;
+
+    private GameController gameController;
 
     private void Start()
     {
-        count = 0;
-        winText.text = "";
-        previousPosition = transform.position;
-    }
-
-    private void Update()
-    {
-        playerPosition.text = transform.position.ToString("0.00");
-        playerVelocity.text =
-            ((transform.position - previousPosition) / Time.deltaTime)
-            .ToString("0.00");
-        previousPosition = transform.position;
+        gameController = GameObject.FindGameObjectWithTag("GameController")
+            .GetComponent<GameController>();
     }
 
     private void FixedUpdate()
@@ -50,18 +33,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp"))
         {
             other.gameObject.SetActive(false);
-            count++;
-            SetCountText();
-        }
-    }
-
-    private void SetCountText()
-    {
-        scoreText.text = "Score: " + count.ToString();
-
-        if (count >= numberOfPickups)
-        {
-            winText.text = "You win!";
+            gameController.IncrementScore();
         }
     }
 }
