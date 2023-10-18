@@ -5,3 +5,4 @@ equally
 When nesting similar game objects in a parent, it is important to reset the
 parent's position before nesting the game objects, otherwise the children's
 - position will be relative to the parent's position, not the origin (0, 0, 0)
+- **OnTriggerEnter** is called when a collider of one game objects makes contact with a collider of another game object
