@@ -14,12 +14,24 @@ public class PlayerController : MonoBehaviour
     // public TextMeshProUGUI winText;
     public Text scoreText;
     public Text winText;
+    public Text playerPosition;
+    public Text playerVelocity;
+    public Vector3 previousPosition;
 
     private void Start()
     {
         count = 0;
         winText.text = "";
-        
+        previousPosition = transform.position;
+    }
+
+    private void Update()
+    {
+        playerPosition.text = transform.position.ToString("0.00");
+        playerVelocity.text =
+            ((transform.position - previousPosition) / Time.deltaTime)
+            .ToString("0.00");
+        previousPosition = transform.position;
     }
 
     private void FixedUpdate()
