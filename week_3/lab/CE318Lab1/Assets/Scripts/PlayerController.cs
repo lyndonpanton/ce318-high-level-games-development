@@ -1,16 +1,22 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed;
     public Rigidbody rb;
     private int count;
+    private int numberOfPickups = 8;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI winText;
 
     private void Start()
     {
         count = 0;
+        winText.text = "";
+        
     }
 
     private void FixedUpdate()
@@ -30,6 +36,17 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             count++;
+            SetCountText();
+        }
+    }
+
+    private void SetCountText()
+    {
+        scoreText.text = "Score: " + count.ToString();
+
+        if (count >= numberOfPickups)
+        {
+            winText.text = "You win!";
         }
     }
 }
