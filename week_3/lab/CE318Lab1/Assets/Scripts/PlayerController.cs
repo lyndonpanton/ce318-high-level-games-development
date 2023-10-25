@@ -9,12 +9,13 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public Rigidbody rb;
 
-    private GameController gameController;
+    private GameController _gameController;
 
     private void Start()
     {
-        gameController = GameObject.FindGameObjectWithTag("GameController")
+        _gameController = GameObject.FindGameObjectWithTag("GameController")
             .GetComponent<GameController>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -23,7 +24,6 @@ public class PlayerController : MonoBehaviour
         var verticalAxis = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(horizontalAxis, 0.0f, verticalAxis);
-        rb = GetComponent<Rigidbody>();
         rb.AddForce(Time.deltaTime * speed * movement);
     }
 
@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp"))
         {
             other.gameObject.SetActive(false);
-            gameController.IncrementScore();
+            _gameController.IncrementScore();
         }
     }
 }
