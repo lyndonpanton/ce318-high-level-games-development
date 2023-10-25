@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour
     private int _count;
     private const int NumberOfPickups = 8;
 
+    private LineRenderer _lineRenderer;
+
 
     // public TextMeshProUGUI scoreText;
     // public TextMeshProUGUI winText;
@@ -31,6 +33,7 @@ public class GameController : MonoBehaviour
         winText.text = "";
         previousPosition = player.transform.position;
         playerRigidbody = player.GetComponent<Rigidbody>();
+        _lineRenderer = gameObject.AddComponent<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -143,14 +146,12 @@ public class GameController : MonoBehaviour
                 = pickup.Equals(closestPick)
                     ? Color.blue
                     : Color.white;
-            // if (pickup.Equals(closestPick))
-            // {
-            //     pickup.GetComponent<Renderer>().material.color = Color.blue;
-            // }
-            // else
-            // {
-            //     pickup.GetComponent<Renderer>().material.color = Color.white;
-            // }
+            if (pickup.Equals(closestPick))
+            {
+                _lineRenderer.SetPosition(0, player.transform.position);
+                _lineRenderer.SetPosition(1, pickup.transform.position);
+                _lineRenderer.SetWidth(0.1f, 0.1f);
+            }
         }
     }
 
