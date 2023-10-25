@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enum;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
@@ -25,6 +27,8 @@ public class GameController : MonoBehaviour
     public Text closestPickupDistance;
     
     public Vector3 previousPosition;
+
+    private GameStates _state = GameStates.Normal;
     
     // Start is called before the first frame update
     public void Start()
@@ -39,20 +43,46 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
-        playerPosition.text = player.transform.position.ToString("0.00");
+        if (Input.GetButtonDown("Switch State"))
+        {
+            switch (_state)
+            {
+                case GameStates.Normal:
+                    _state = GameStates.Distance;
+                    break;
+                case GameStates.Distance:
+                    _state = GameStates.Vision;
+                    break;
+                case GameStates.Vision:
+                    _state = GameStates.Normal;
+                    break;
+                default:
+                    break;
+            }
+        }
 
-        // playerVelocity.text = (Mathf.Sqrt(playerRigidbody.velocity.x * 2 +
-        //                                  playerRigidbody.velocity.z * 2) *
-        //                        Time.deltaTime)
-        //                                 .ToString("0.00");
+        if (_state == GameStates.Normal)
+        {
+            ToggleUIElements(false);
+        }
+        else if (_state == GameStates.Distance)
+        {
+            ToggleUIElements(true);
+            playerPosition.text = player.transform.position.ToString("0.00");
 
-        // playerVelocity.text =
-        //     Mathf.Sqrt(player.transform.position - previousPosition) / Time.deltaTime;
-        playerVelocity.text =
-            ((player.transform.position - previousPosition) / Time.deltaTime)
-            .ToString("0.00");
-        previousPosition = player.transform.position;
-        CalculateClosestPick();
+            // playerVelocity.text = (Mathf.Sqrt(playerRigidbody.velocity.x * 2 +
+            //                                  playerRigidbody.velocity.z * 2) *
+            //                        Time.deltaTime)
+            //                                 .ToString("0.00");
+
+            // playerVelocity.text =
+            //     Mathf.Sqrt(player.transform.position - previousPosition) / Time.deltaTime;
+            playerVelocity.text =
+                ((player.transform.position - previousPosition) / Time.deltaTime)
+                .ToString("0.00");
+            previousPosition = player.transform.position;
+            CalculateClosestPickUp();
+        }
     }
 
     public void IncrementScore()
@@ -71,7 +101,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void CalculateClosestPick()
+    private void CalculateClosestPickUp()
     {
         List<GameObject> activePickups = new List<GameObject>();
         var i = 0;
@@ -81,18 +111,34 @@ public class GameController : MonoBehaviour
             if (pickup.activeSelf)
             {
                 activePickups.Add(pickup);
-                i++;
             }
         }
 
         GameObject closestPickup = null;
         float currentLocationDifference = 0;
+        float closestPickupLocationDifference = 0;
 
         foreach (var pickup in activePickups)
         {
             if (closestPickup == null)
             {
+                var currentXLocationDifference = Mathf.Abs(
+                    player.transform.position.x -
+                    pickup.transform.position.x
+                );
+
+                var currentZLocationDifference = Mathf.Abs(
+                    player.transform.position.z -
+                    pickup.transform.position.z
+                );
+
+                currentLocationDifference = Mathf.Sqrt(
+                    Mathf.Pow(currentXLocationDifference, 2)
+                    + Mathf.Pow(currentZLocationDifference, 2)
+                );
+                
                 closestPickup = pickup;
+                closestPickupLocationDifference = currentLocationDifference;
             }
             else
             {
@@ -129,11 +175,12 @@ public class GameController : MonoBehaviour
                 if (previousLocationDifference > currentLocationDifference)
                 {
                     closestPickup = pickup;
+                    closestPickupLocationDifference = currentLocationDifference;
                 }
             }
             
             HighlightClosestPickup(closestPickup, pickups);
-            SetClosestPickupText(currentLocationDifference);
+            SetClosestPickupText(closestPickupLocationDifference);
         }
     }
 
@@ -146,11 +193,17 @@ public class GameController : MonoBehaviour
                 = pickup.Equals(closestPick)
                     ? Color.blue
                     : Color.white;
+            
             if (pickup.Equals(closestPick))
             {
                 _lineRenderer.SetPosition(0, player.transform.position);
                 _lineRenderer.SetPosition(1, pickup.transform.position);
                 _lineRenderer.SetWidth(0.1f, 0.1f);
+            }
+            
+            if (_state != GameStates.Distance)
+            {
+                // Destroy(_lineRenderer.gameObject);  
             }
         }
     }
@@ -158,5 +211,14 @@ public class GameController : MonoBehaviour
     private void SetClosestPickupText(float distance)
     {
         closestPickupDistance.text = distance.ToString("0.00");
+    }
+
+    private void ToggleUIElements(bool visibility)
+    {
+        scoreText.gameObject.SetActive(visibility);
+        winText.gameObject.SetActive(visibility);
+        playerPosition.gameObject.SetActive(visibility);
+        playerVelocity.gameObject.SetActive(visibility);
+        closestPickupDistance.gameObject.SetActive(visibility);
     }
 }

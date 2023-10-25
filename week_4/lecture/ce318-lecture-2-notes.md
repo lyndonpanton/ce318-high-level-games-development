@@ -92,18 +92,21 @@ Edit -> Project Settings -> Input
 
 Input.GetAxis(string name): To check for a specific axis
 Input.GetKey(string key): To check for a specific key
+
 - Whilst the key is being held down
 Input.GetButton()
 Input.GetKeyDown(KeyCode keycode)
+
 - Only on the first frame triggered
 Input.GetButtonDown()
 Input.GetKeyUp(KeyCode keycode)
+
 - Only on the first frame triggered
 - Key codes can be gather via predefined values (i.e. KeyCode.A, KeyCode.Space)
+
 Input.GetButtonUp()
 
-Input.GetButton is recommended over Input.GetKey, as it allows access to input
-controls specified in the Input Manager
+Input.GetButton is recommended over Input.GetKey, as it allows access to input controls specified in the Input Manager
 Input.GetKey can only return true or false
 Input.GetAxis can return any value between -1 and 1
 Input.GetAxisRaw can only return -1, 0 or 1
