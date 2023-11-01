@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     public Text playerPosition;
     public Text playerVelocity;
     public Text closestPickupDistance;
+    public Text modeText;
     
     public Vector3 previousPosition;
     public Vector3 previousVelocity;
@@ -64,10 +65,12 @@ public class GameController : MonoBehaviour
 
         if (_state == GameStates.Normal)
         {
+            modeText.text =  "Mode: Normal";
             ToggleUIElements(false);
         }
         else if (_state == GameStates.Distance)
         {
+            modeText.text =  "Mode: Distance";
             ToggleUIElements(true);
             playerPosition.text = player.transform.position.ToString("0.00");
 
@@ -89,6 +92,7 @@ public class GameController : MonoBehaviour
         }
         else if (_state == GameStates.Vision)
         {
+            modeText.text =  "Mode: Vision";
             ChangeToVisionMode();
         }
     }
