@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour
     public Text closestPickupDistance;
     
     public Vector3 previousPosition;
+    public Vector3 previousVelocity;
 
     private GameStates _state = GameStates.Normal;
     
@@ -76,12 +77,19 @@ public class GameController : MonoBehaviour
             //                                 .ToString("0.00");
 
             // playerVelocity.text =
-            //     Mathf.Sqrt(player.transform.position - previousPosition) / Time.deltaTime;
-            playerVelocity.text =
-                ((player.transform.position - previousPosition) / Time.deltaTime)
+            //     ((player.transform.position - previousPosition) / Time.deltaTime)
+            //     .ToString("0.00");
+            playerVelocity.text = (Math.Sqrt(Math.Pow(playerRigidbody.velocity.x, 2)
+                + Math.Pow(playerRigidbody.velocity.z, 2)) / Time.deltaTime / 100)
                 .ToString("0.00");
             previousPosition = player.transform.position;
+            // previousVelocity = playerRigidbody.velocity;
+
             CalculateClosestPickUp();
+        }
+        else if (_state == GameStates.Vision)
+        {
+            ChangeToVisionMode();
         }
     }
 
@@ -89,6 +97,36 @@ public class GameController : MonoBehaviour
     {
         _count++;
         SetCountText();
+    }
+
+    public void ChangeToVisionMode()
+    {
+        ToggleUIElements(false);
+        _lineRenderer.enabled = true;
+
+        List<GameObject> activePickups = new List<GameObject>();
+        
+        foreach (var pickup in pickups)
+        {
+            if (pickup.activeSelf)
+            {
+                activePickups.Add(pickup);
+                pickup.GetComponent<Renderer>().material.color
+                    = Color.white;
+            }
+        }
+
+        _lineRenderer.SetPosition(0, new Vector3(
+            -5f, 0.5f, -5f
+        ));
+        
+        
+        _lineRenderer.SetPosition(1, new Vector3(
+            (Mathf.Sqrt(Mathf.Pow(playerRigidbody.velocity.x, 2)
+                + Mathf.Pow(playerRigidbody.velocity.z, 2)) / Time.deltaTime / 100 - 5f), 0.5f, -5f
+        ));
+
+        _lineRenderer.SetWidth(0.1f, 0.1f);
     }
 
     private void SetCountText()
@@ -104,7 +142,6 @@ public class GameController : MonoBehaviour
     private void CalculateClosestPickUp()
     {
         List<GameObject> activePickups = new List<GameObject>();
-        var i = 0;
         
         foreach (var pickup in pickups)
         {
@@ -215,10 +252,11 @@ public class GameController : MonoBehaviour
 
     private void ToggleUIElements(bool visibility)
     {
-        scoreText.gameObject.SetActive(visibility);
-        winText.gameObject.SetActive(visibility);
+        // scoreText.gameObject.SetActive(visibility);
+        // winText.gameObject.SetActive(visibility);
         playerPosition.gameObject.SetActive(visibility);
         playerVelocity.gameObject.SetActive(visibility);
         closestPickupDistance.gameObject.SetActive(visibility);
+        _lineRenderer.enabled = visibility;
     }
 }
