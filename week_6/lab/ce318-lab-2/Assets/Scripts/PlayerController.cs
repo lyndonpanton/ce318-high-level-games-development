@@ -203,6 +203,9 @@ public class PlayerController : MonoBehaviour
 
     void ShootBolt()
     {
+        Quaternion boltRotation = Quaternion.Euler(
+            new Vector3(90, 0, 0)
+        );
         GameObject bolt = Instantiate(
             boltPrefab,
             new Vector3(
@@ -210,7 +213,7 @@ public class PlayerController : MonoBehaviour
                 transform.position.y + 1,
                 transform.position.z
             ),
-            Quaternion.identity
+            boltRotation
         );
 
         // bolt.transform.rotation = Quaternion.Euler(new Vector3(0, 90, 90));
