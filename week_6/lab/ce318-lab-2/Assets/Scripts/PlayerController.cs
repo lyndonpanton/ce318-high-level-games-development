@@ -9,14 +9,18 @@ public class PlayerController : MonoBehaviour
     public float speed;
     private float _horizontal;
     private float _vertical;
+    
+    private bool _shooting;
+    private const float FireRate = 0.5f;
+    private float _fireTimer;
 
+    public new Camera camera;
     public float minimumX;
     public float maximumX;
     public float minimumY;
     public float maximumY;
-    
 
-    public new Camera camera;
+    public GameObject boltPrefab;
     
     // Start is called before the first frame update
     void Start()
@@ -36,6 +40,18 @@ public class PlayerController : MonoBehaviour
     {
         _horizontal = Input.GetAxis("Horizontal");
         _vertical = Input.GetAxis("Vertical");
+        _shooting = Input.GetMouseButtonDown(0);
+
+        if (_fireTimer <= 0)
+        {
+            
+            if (_shooting) ShootBolt();
+        }
+        else
+        {
+            _fireTimer -= Time.deltaTime;
+        }
+
 
         if (_horizontal < 0)
         {
@@ -183,5 +199,22 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Maximum x coordinate: " + maximumX);
         Debug.Log("Minimum y coordinate: " + minimumY);
         Debug.Log("Maximum y coordinate: " + maximumY);
+    }
+
+    void ShootBolt()
+    {
+        GameObject bolt = Instantiate(
+            boltPrefab,
+            new Vector3(
+                transform.position.x,
+                transform.position.y + 1,
+                transform.position.z
+            ),
+            Quaternion.identity
+        );
+
+        // bolt.transform.rotation = Quaternion.Euler(new Vector3(0, 90, 90));
+            
+        _fireTimer = FireRate;
     }
 }
