@@ -42,12 +42,20 @@ public class PlayerController : MonoBehaviour
             rb.transform.Translate(
                 Time.deltaTime * speed * new Vector3(-1, 0, 0)
             );
+
+            transform.rotation = Quaternion.Euler(0, -15, 0);
         }
         else if (_horizontal > 0)
         {
             rb.transform.Translate(
                 Time.deltaTime * speed * new Vector3(1, 0, 0)
             );
+
+            transform.rotation = Quaternion.Euler(0, 15, 0);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         if (_vertical < 0)
@@ -55,7 +63,6 @@ public class PlayerController : MonoBehaviour
             rb.transform.Translate(
                 Time.deltaTime * speed * new Vector3(0, 0, -1)
             );
-
         }
         else if (_vertical > 0)
         {
