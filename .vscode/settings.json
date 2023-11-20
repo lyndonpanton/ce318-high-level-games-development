@@ -1,4 +1,6 @@
 {
     "git.ignoreLimitWarning": true,
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "FSharp.suggestGitignore": false,
+    "dotnet.defaultSolution": "disable"
 }

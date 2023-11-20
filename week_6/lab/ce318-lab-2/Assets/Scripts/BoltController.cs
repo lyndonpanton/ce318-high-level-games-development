@@ -13,21 +13,21 @@ public class BoltController : MonoBehaviour
     {
         speed = 3f;
         
-        Debug.Log(
-            "( "
-            + transform.position.x
-            + ", " + transform.position.y
-            + ", " + transform.position.z
-            + " )"
-        );
-        
-        Debug.Log(
-            "( "
-            + transform.rotation.x
-            + ", " + transform.rotation.y
-            + ", " + transform.rotation.z
-            + " )"
-        );
+        // Debug.Log(
+        //     "( "
+        //     + transform.position.x
+        //     + ", " + transform.position.y
+        //     + ", " + transform.position.z
+        //     + " )"
+        // );
+        //
+        // Debug.Log(
+        //     "( "
+        //     + transform.rotation.x
+        //     + ", " + transform.rotation.y
+        //     + ", " + transform.rotation.z
+        //     + " )"
+        // );
         
         rb.AddForce(
             speed * Vector3.forward,

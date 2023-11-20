@@ -195,10 +195,10 @@ public class PlayerController : MonoBehaviour
 
         maximumY = minimumY * -1;
 
-        Debug.Log("Minimum x coordinate: " + minimumX);
-        Debug.Log("Maximum x coordinate: " + maximumX);
-        Debug.Log("Minimum y coordinate: " + minimumY);
-        Debug.Log("Maximum y coordinate: " + maximumY);
+        // Debug.Log("Minimum x coordinate: " + minimumX);
+        // Debug.Log("Maximum x coordinate: " + maximumX);
+        // Debug.Log("Minimum y coordinate: " + minimumY);
+        // Debug.Log("Maximum y coordinate: " + maximumY);
     }
 
     void ShootBolt()
