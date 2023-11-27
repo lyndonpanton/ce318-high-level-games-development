@@ -5,29 +5,18 @@ using UnityEngine;
 
 public class BoltController : MonoBehaviour
 {
+    // [SerializeField] private GameObject gameController;
+    private GameController _gameController;
+    
     [SerializeField] private float speed;
     [SerializeField] private Rigidbody rb;
     
     // Start is called before the first frame update
     void Start()
     {
+        _gameController = GameObject.Find("GameController")
+            .GetComponent<GameController>();
         speed = 3f;
-        
-        // Debug.Log(
-        //     "( "
-        //     + transform.position.x
-        //     + ", " + transform.position.y
-        //     + ", " + transform.position.z
-        //     + " )"
-        // );
-        //
-        // Debug.Log(
-        //     "( "
-        //     + transform.rotation.x
-        //     + ", " + transform.rotation.y
-        //     + ", " + transform.rotation.z
-        //     + " )"
-        // );
         
         rb.AddForce(
             speed * Vector3.forward,
@@ -35,9 +24,14 @@ public class BoltController : MonoBehaviour
         );
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnCollisionEnter(Collision other)
     {
-        
+        // if (other.gameObject.CompareTag("Asteroid"))
+        // {
+        //     Debug.Log("Bolt <> Asteroid Collision!");
+        //     
+        //     Destroy(other.gameObject);
+        //     Destroy(gameObject);
+        // }
     }
 }

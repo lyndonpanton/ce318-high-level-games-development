@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,9 @@ using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
+    // [SerializeField] private GameObject gameController;
+    private GameController _gameController;
+    
     [SerializeField] private Rigidbody rb;
     public float speed;
     private float _horizontal;
@@ -21,10 +25,22 @@ public class PlayerController : MonoBehaviour
     public float maximumY;
 
     public GameObject boltPrefab;
+    public GameObject playerExplosion;
+    
+    [SerializeField] private AudioSource[] audioSources;
+
+    private AudioSource _explosionAudioSource;
+    private AudioSource _weaponAudioSource;
     
     // Start is called before the first frame update
     void Start()
     {
+        _gameController = GameObject.Find("GameController")
+            .GetComponent<GameController>();
+
+        _explosionAudioSource = audioSources[0];
+        _weaponAudioSource = audioSources[1];
+        
         speed = 5;
         camera = Camera.main;
         GetCameraBounds();
@@ -56,7 +72,8 @@ public class PlayerController : MonoBehaviour
         if (_horizontal < 0)
         {
             rb.transform.Translate(
-                Time.deltaTime * speed * new Vector3(-1, 0, 0)
+                Time.deltaTime * speed * new Vector3(-1, 0, 0),
+                Space.World
             );
 
             transform.rotation = Quaternion.Euler(0, -15, 0);
@@ -64,7 +81,8 @@ public class PlayerController : MonoBehaviour
         else if (_horizontal > 0)
         {
             rb.transform.Translate(
-                Time.deltaTime * speed * new Vector3(1, 0, 0)
+                Time.deltaTime * speed * new Vector3(1, 0, 0),
+                Space.World
             );
 
             transform.rotation = Quaternion.Euler(0, 15, 0);
@@ -127,6 +145,29 @@ public class PlayerController : MonoBehaviour
         // }
 
         ClampPosition();
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        Debug.Log("player <> asteroid collision");
+        if (other.gameObject.CompareTag("Asteroid"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _explosionAudioSource.Play();
+        
+        GameObject explosion = Instantiate(
+            playerExplosion,
+            transform.position,
+            Quaternion.identity
+        );
+
+        Destroy(explosion, 2);
+        _gameController.DisplayGameOverScreen();
     }
 
     void ClampPosition()
@@ -203,6 +244,7 @@ public class PlayerController : MonoBehaviour
 
     void ShootBolt()
     {
+        _weaponAudioSource.Play();
         Quaternion boltRotation = Quaternion.Euler(
             new Vector3(90, 0, 0)
         );
@@ -210,7 +252,7 @@ public class PlayerController : MonoBehaviour
             boltPrefab,
             new Vector3(
                 transform.position.x,
-                transform.position.y + 1,
+                2,
                 transform.position.z
             ),
             boltRotation
